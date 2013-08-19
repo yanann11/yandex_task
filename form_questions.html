@@ -1,0 +1,492 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ 	<title>Компания Яндекс: Анкета второй школы интерфейсов в Москве</title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="style.css" />
+	<script type="text/javascript" charset="utf-8" src="//yandex.st/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function(){
+       jQuery('p.additional').bind('click',function(){
+    	jQuery('div.additional').toggle('slow');})
+
+               jQuery('.select').click(function(){
+                    $(this).parent().find('.options').fadeIn('fast');
+                });
+                jQuery('.options').mouseleave(function(){
+                    $(this).fadeOut('fast');
+                });
+                jQuery('.options > div').click(function(){
+                    jQuery(this).closest('.select_field').find('.select').html(jQuery(this).html());
+                    jQuery(this).closest('.select_field').find('input').attr('value', jQuery(this).attr('value'));
+                    var id=jQuery('.select_field').find('input[type="hidden"]').attr('id');
+                    fill_color($(this).attr('value'),id);
+                    jQuery.each($(this).parent().children('div.check'), function(){
+                        $(this).removeClass('check');
+                    });
+                    jQuery(this).addClass('check');
+                    jQuery(this).parent().fadeOut('fast');
+                });
+    	jQuery('textarea').bind('keyup',function(){
+                	  fill_color(jQuery(this).val(),jQuery(this).attr('id'));
+    		})
+
+       jQuery('input[type="text"]').bind('keyup',function(){
+        	fill_color(jQuery(this).val(),jQuery(this).attr('id'));
+        	var filed_name=jQuery(this).attr('name');
+        	if(filed_name=='email'){
+
+        		checkmail(jQuery(this).val());
+        	}
+    		})
+    		jQuery('input[type="checkbox"]').bind('click',function(){
+    			if(jQuery(this).attr('checked')=='checked')fill_color('cheked',jQuery(this).attr('id'));
+    			else fill_color('no',jQuery(this).attr('id'));
+    		})
+
+
+    });
+    function fileSelect(evt) {
+
+    if (evt.target.files) {
+        selectedFile = evt.target.files[0];
+    }
+    selectedFileName = evt.target.files[0].name;
+    if(selectedFileName.length>58){
+      start_str=selectedFileName.substring(0,32);
+      end_str=selectedFileName.substring(length.selectedFileName-32,32);
+      selectedFileName=start_str+'...'+end_str;
+    }
+    file_size=evt.target.files[0].size;
+
+     if(file_size<1024*250){
+     var parent_div=jQuery(evt.target).parent();
+     console.log(parent_div);
+     var id=parent_div[0].id;
+     fill_color('add_files',id)
+     jQuery('span.select_file').empty().append(selectedFileName);
+     jQuery('span.select_file').append('<span class="delete" onclick="delete_file()"></span>')
+     	}else {
+     		jQuery('span.select_file').empty().addClass('error').append('Размер превышает 250 Кб');
+     	}
+
+
+
+
+};
+jQuery(window).scroll(function() {    if(jQuery(this).scrollTop()==0)jQuery('#header').removeClass("fixed");
+
+	else  jQuery('#header').addClass("fixed")
+});
+function delete_file(evt){
+	 jQuery('input[name="rezume"]').replaceWith(jQuery('input[name="rezume"]').clone(true));
+	 jQuery('span.select_file').empty().append('файл не выбран');
+}
+function checkmail(email) {
+	if(email.lenght!=0){
+	value=email;
+	reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+	if (!value.match(reg)) {
+	jQuery('input[name="email"]').css('border','1px solid red');
+	return 1; }else {
+	jQuery('input[name="email"]').css('border-color','#c4c4c4');
+	return 0;
+	}}
+	return 0;
+}
+function check_div_fileds(filed_class){
+     var fileds=jQuery(filed_class);
+     for(var i=0;i<fileds.length;i++){
+     	if(jQuery(fileds[i]).val().length>3)return true;
+     }
+     return false;
+}
+function check_fileds_forms(){
+	if(jQuery('input[type="checkbox"]').attr('checked')!='checked'){
+		jQuery('div.agree>p.error').empty();
+		jQuery('div.agree').append('<p class="error">Подтвердите, пожалуйста, своё согласие на передачу анкеты с вашими персональными данными.</p>')
+	}
+	checkmail(jQuery('input[name="email"]').val());
+    if(jQuery('input[type="hidden"]').val()=='first')jQuery('.select_field .select').css('border','1px solid red');
+
+}
+    function fill_color(val,id){
+        console.log(id);
+    	jQuery('#task_'+id).addClass('progres_task');
+        jQuery('#task_'+id).css('background','white')
+        jQuery('#task_'+id).removeClass('progress');
+    	if(val.length>3){
+    		jQuery('#task_'+id).addClass('progress');
+    		jQuery('#task_'+id).css('background','#818ff5');
+    		 jQuery('#task_'+id).removeClass('progres_task');
+              jQuery('#task_'+id+'>a.task').attr('href','#task'+id);
+    		if(id>3){
+
+    			jQuery('#task_'+id).css('background','#3bb8f7');
+    			if(check_div_fileds('textarea.tasks')){
+    			jQuery('p.note').empty().append('Справились с тестами идем дальше')}
+    		}
+    		if(id>15)
+    		{
+
+    		jQuery('#task_'+id).css('background','#00c3e7')
+    		var text;
+    		 if(check_div_fileds('textarea.question')){
+	    		if(check_div_fileds('textarea.tasks')){
+	    		 text='Так держать!';}
+	    		 else{
+	    		 	text='А как же задания?';
+	    		 }
+
+    		 }else{text='Заполнить анкету вы должны';}
+    		 jQuery('p.note').empty().append(text);
+    		 jQuery('p.note').css('left','56.7%');
+    		 }
+    		 if(id>18){
+    		 if(check_div_fileds('input.input_form')){
+    		 if(check_div_fileds('textarea.question')){
+	    		if(check_div_fileds('textarea.tasks')){
+	    			text="Осталось совсем немного";
+    		 }
+    		 }else {text="А как же задания?"}
+    		 }else{
+    		 	text="Заполнить анкету вы должны"
+    		 }
+              jQuery('p.note').empty().append(text);
+    		  jQuery('p.note').css('left','67.7%');
+    		 }
+
+    	}
+    }
+
+    </script>
+</head>
+<body>
+
+		<div id="header">
+			<div class="aligment">
+				<div id="logo">
+				<span class="logo red_symbol">Я</span>
+				<span class="logo">Ш</span>
+			</div>
+			<div id="logo_info">
+			<p>Анкета второй Школы</p>
+			<p>разработки интерфейсов в Москве</p>
+			</div>
+			<div id="school_info">
+			<p>Прием заявок закрывается <b>19 августа в 23:59 (Мск).</b></p>
+			<p>По результатам теста мы пригласим в школу 30-40 человек</p>
+		   </div>
+		   <p class="note"></p>
+		<div id="progres_bar">
+
+			<div id="task_1" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_2" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_3" class="progress"><a class="task">&nbsp;</a></div>
+
+			<div class="quest">
+			<div id="task_4" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_5" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_6" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_7" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_8" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_9" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_10" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_11" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_12" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_13" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_14" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_15" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_16" class="progress"><a class="task">&nbsp;</a></div>
+			</div>
+
+			<div id="task_17" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_18" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_19" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_20" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_21" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_22" class="progress"><a class="task">&nbsp;</a></div>
+			<div id="task_23" class="progress"><a class="task">&nbsp;</a></div>
+
+		</div>
+         </div>
+		</div>
+        <div id="wrap">
+		<div id="main_content">
+		<form enctype="multipart/form-data" method="POST" >
+
+		<h3 class="tasks">Выполните тестовые задания</h3>
+		<div class="task">
+		<a class="anchor" name="task1">&nbsp;</a>
+		<span class="header">задание 1</span>
+
+		<div class="text">
+			<p>Напишите на JavaScript функцию, которая выводит список всех чисел, которые равны сумме факториалов своих цифр. Пример такого числа:</p>
+				<p>4! + 0! + 5! + 8! + 5! = 40585</p>
+				<p>В качестве ответа на вопрос пришлите ссылку на <a href="http://jsfiddle.net">jsfiddle.net</a> с вашим кодом или на ваш репозиторий на <a href="https://github.com/">github.com</a>.</p>
+
+			</div>
+			<div class="field_task">
+			<textarea name="quest" rows="20" cols="20" id="1" class="tasks"></textarea>
+			</div>
+			</div>
+			<div class="task">
+			<a class="anchor" id="task2">&nbsp;</a>
+			<span class="header">задание 2</span>
+			<div class="text">
+			<p>Вы — пилот грузового межгалактического корабля. Ваша работа — перевозка грузов с одной планету на другую. Грузоподъемность вашего корабля ограничена, поэтому за один рейс вы можете перевезти не более N кг полезного груза. Ваш корабль умеет сообщать свое состояние (местоположение и степень загруженности), а также летать в любую точку пространства. Каждая планета может содержать на себе груз, который можно взять. Также на каждой планете груз можно оставить .</p>
+
+			<p>Даны незавершенные интерфейсы корабля и планеты. Напишите недостающий код.</p>
+
+			<p>Полное условие задачи доступно на <a href="https://github.com/yandex-shri/introtask-space">github.com/yandex-shri/introtask-space</a>.
+
+			<p>В качестве ответа на вопрос пришлите ссылку на <a href="http://jsfiddle.net/">jsfiddle.net</a> с вашим кодом или на ваш репозиторий на <a href="https://github.com/">github.com</a>.
+
+
+			</div>
+			<div class="field_task">
+			<textarea name="quest" id="2" class="tasks"></textarea>
+			</div>
+		</div>
+		 <div class="task">
+		 <a class="anchor" name="task3">&nbsp;</a>
+			<span class="header" >задание 3</span>
+		 <div class="text">
+		<p>Сверстайте форму-анкету с нашими заданиями для кандидатов. Страница должна работать в следующих браузерах: MSIE (8, 9, 10), Google Chrome (26, 27), Firefox (20, 21), Opera (12.15, 12.14), Яндекс.Браузер 1.5. По возможности используйте приёмы безопасной деградации CSS. Страница должна содержать интерактив, реализованный с помощью JS и jQuery. </p>
+		<p>Это может быть:</p>
+        <ul>
+		 	<li>проверка полноты и правильности заполнения полей (где это возможно); </li>
+
+			<li>возможность свернуть и развернуть разделы (аккордеон);</li>
+
+			<li>индикатор заполнения анкеты;</li>
+
+			<li>что-нибудь ещё.</li>
+			</ul>
+
+		<p>Подумайте над тем, как эти данные будут отправляться на сервер.</p>
+
+		<p>Будет плюсом, если вы сверстаете страницу, используя БЭМ.</p>
+        <p>Разработку необходимо вести на <a href="https://github.com/">github.com</a>. В качестве ответа на вопрос пришлите ссылку на проект.</p>
+		<p class="additional">Дополнительные задания</p>
+  		<div class="additional">
+		<p>1. Выполните задание про форму-анкету, используя один из классических шаблонизаторов: Handlebars, mustache, Dust, Jade и т.п.</p>
+
+		<p>2. Выполните задание про форму-анкету, используя один из экзотических шаблонизаторов: XSLT, YATE, BEMHTML и т.п. </p></div>
+
+
+			</div>
+			<div class="field_task">
+			<textarea name="quest" id="3" class="tasks"></textarea>
+			</div>
+		</div>
+
+
+
+				<h3 class="question">Заполните анкету</h3>
+				<div class="task">
+					<a class="anchor" name="task4"></a>
+					 <span class="header">вопрос 1</span>
+					<div class="text"><p>Год рождения.</p></div>
+					  <div class="field_questions">
+					  <textarea name="quest" id="4"  class="question"></textarea></div>
+					</div>
+
+				<div class="task">
+				<a class="anchor" name="task5"></a>
+				<span class="header">вопрос 2</span>
+				<div class="text"><p>Город, в котором вы живёте.</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="5" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task6"></a>
+				<span class="header">вопрос 3</span>
+
+				<div class="text"><p>Вуз, факультет, специальность, кафедра.</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="6" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task7"></a>
+					<span class="header">вопрос 4</span>
+				<div class="text"><p>Год окончания вуза.</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="7" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task8"></a>
+				<span class="header">вопрос 5</span>
+
+				<div class="text"><p>Уровень владения английским языком:</p>
+				<div class="list">
+				<input type="radio" name="level_english" value="начальный" /> начальный;<br />
+				<input type="radio" name="level_english" value="начальный" /> средний; <br />
+				<input type="radio" name="level_english" value="начальный" /> свободное владение.<br /></div>
+				</div>
+				  <div class="field_questions">
+					<textarea name="quest" id="8" class="question"></textarea>
+					</div> </div>
+					<div class="task">
+					<a class="anchor" name="task9"></a>
+				<span class="header">вопрос 6</span>
+
+				<div class="text"><p>Чего вы ожидаете от участия в Школе?</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="9" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task10"></a>
+				<span class="header">вопрос 7</span>
+
+				<div class="text"><p>Откуда вы о нас узнали?</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="10" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task11" ></a>
+				<span class="header">вопрос 8</span>
+
+				<div class="text"><p>Сколько времени вы были бы готовы уделять стажировке или работе в Яндексе?</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="11" class="question"></textarea>
+					</div></div>
+
+					<div class="task">
+					<a class="anchor" name="task12"></a>
+				<span class="header">вопрос 9</span>
+
+				<div class="text"><p>Расскажите о вашем опыте разработки. Нам будет интересно всё — как серьезный интерфейс, так и просто домашняя страничка.</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" id="12" class="question"></textarea>
+					</div></div>
+					<div class="task">
+					<a class="anchor" name="task13"></a>
+				<span class="header">вопрос 10</span>
+
+				<div class="text"><p>Если вы где-нибудь работали, расскажите, какие у вас были должностные обязанности и был ли опыт работы в команде.</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" class="question" id="13"></textarea>
+					</div></div>
+				<div class="task">
+				<a class="anchor" name="task14"></a>
+				<span class="header">вопрос 11</span>
+
+					<div class="text">
+					<p>Перечислите, какими программными продуктами вы пользуетесь в своей работе — от редактора до специализированных утилит (Intellij Idea, Node.js, Uglify.js, GNU Make). Для каждого инструмента укажите, какие задачи вы с помощью него решаете и почему выбрали именно его.</p></div>
+				  	<div class="field_questions">
+					<textarea name="quest" class="question" id="14"></textarea>
+					</div>
+					</div>
+					 <div class="task">
+					 <a class="anchor" name="task15"></a>
+				<span class="header">вопрос 12</span>
+
+				<div class="text"><p>Пользуетесь ли вы командной строкой? Какими командами вы пользуетесь и какие задачи вы решаете с их помощью? С какими программами вы преимущественно или полностью взаимодействуете через интерфейс командной строки?</p></div>
+				  <div class="field_questions">
+					<textarea name="quest" class="question" id="15"></textarea>
+
+			</div>
+              </div>
+
+
+          <h3 class="about">Расскажите нам о себе</h3>
+           <div class="task">
+           <div class="text">
+           <a class="anchor" name="task16"></a>
+            <p>Резюме до 250 КБ</p>
+           	</div>
+           	<div class="field_about">
+           		<span class="file" id="16">Выбрать файл
+           		<input type="file" name="rezume" id="17" class="input_form" onchange="fileSelect(event,jQuery(this).id)"/>
+           		</span>
+           		<span class="select_file">файл не выбран</span>
+           		</div>
+           </div>
+            <div class="task">
+           <div class="text">
+           <a class="anchor" name="task17"></a>
+            <p>Ссылка на профиль в Моем Круге</p>
+           	</div>
+           	<div class="field_about">
+              <input type="text" class="input_form" name="link_my_krug" id="17"/>
+            </div>
+           </div>
+           <div class="task">
+           <div class="text">
+           <a class="anchor" name="task18"></a>
+            <p>Имя, Фамилия</p>
+           	</div>
+           	<div class="field_about">
+              <input type="text" class="input_form" name="name" id="18"/>
+            </div>
+           </div>
+
+			<div class="task">
+           <div class="text">
+           <a class="anchor" name="task19"></a>
+            <p>Телефон</p>
+           	</div>
+           	<div class="field_about">
+              <input type="text" class="input_form" name="phone" id="19"/>
+            </div>
+           </div>
+           <div class="task">
+           <div class="text">
+           <a class="anchor" name="task20"></a>
+            <p>Email</p>
+           	</div>
+           	<div class="field_about">
+              <input type="text" class="input_form" name="email" id="20"/>
+            </div>
+           </div>
+           <div class="task">
+           <div class="text">
+           <a class="anchor" name="task21"></a>
+            <p>Дополнительные сведения</p>
+           	</div>
+
+              <div class="field_questions">
+					<textarea name="info" class="question" id="21"></textarea>
+					</div>
+            </div>
+            <div class="task">
+            <div class="text">
+            <a class="anchor" name="task22"></a>
+            <p>Откуда вы узнали о нашем предложении?</p></div>
+            <div class="field_about">
+            	<div class="select_field">
+            		<div class="select">выбрать</div>
+            			<div class="options">
+			            	 <div value="от HR-менеджера Яндекса">от HR-менеджера Яндекса</div>
+			            	 <div value="Я.Субботник">Я.Субботник</div>
+			            	 <div value="на другой конференции">на другой конференции</div>
+			            	 <div value="из поиска">из поиска</div>
+			            	 <div value="по рекомендации">по рекомендации</div>
+			            	 <div value="другое">другое</div>
+            			</div>
+            			<input type="hidden" name="select" class="input_form" value="first" id="23">
+            		</div>
+
+            	</div>
+           		</div>
+
+
+
+           </div>
+         <div id="footer">
+         <div class="agree">
+         <input type="checkbox" name="agree"> <b>Я согласен передать свои персональные данные</b>
+         <p>Я даю свое согласие на передачу в ООО «ЯНДЕКС» резюме и/или анкеты, содержащих мои персональные данные, и согласен с тем, что они будут храниться в ООО «ЯНДЕКС» в течение 5 лет и будут обрабатываться исключительно для целей предложения мне вакансий группы компаний «ЯНДЕКС», в соответствии с Федеральным законом «О персональных данных».
+         </div>
+         <div class="buttons">
+         <input type="button"  onclick="check_fileds_forms()" class="send" value="Отправить" />
+         <input type="reset" value="Очистить" class="reset"></div>
+         </div>
+         </form>
+        </div>
+
+	</div>
+</body>
+</html>
